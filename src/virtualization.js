@@ -209,7 +209,6 @@
   }
 
   function setButtonVisibility(button, shouldShow) {
-    if (!button) return;
     button.style.display = shouldShow ? "flex" : "none";
   }
 
