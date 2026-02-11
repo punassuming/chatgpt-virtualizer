@@ -241,8 +241,12 @@
       if (position === "top") {
         scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
       } else {
+        const maxScrollTop = Math.max(
+          0,
+          scrollTarget.scrollHeight - scrollTarget.clientHeight
+        );
         scrollTarget.scrollTo({
-          top: scrollTarget.scrollHeight,
+          top: maxScrollTop,
           behavior: "smooth"
         });
       }
@@ -278,7 +282,7 @@
     }
 
     const isScrollable =
-      scrollTarget.scrollHeight > scrollTarget.clientHeight + SCROLL_BUFFER_PX;
+      scrollTarget.scrollHeight - scrollTarget.clientHeight > SCROLL_BUFFER_PX;
     if (!isScrollable) {
       hideScrollButtons();
       return;
