@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     DEFAULT_MARGIN_PX: 2000
   };
 
-  const MIN_BUFFER_PX = config.MIN_MARGIN_PX ?? 500;
-  const MAX_BUFFER_PX = config.MAX_MARGIN_PX ?? 5000;
-  const DEFAULT_BUFFER_PX = config.DEFAULT_MARGIN_PX ?? 2000;
+  const MIN_BUFFER_PX = config.MIN_MARGIN_PX;
+  const MAX_BUFFER_PX = config.MAX_MARGIN_PX;
+  const DEFAULT_BUFFER_PX = config.DEFAULT_MARGIN_PX;
 
   function normalizeBufferSize(value) {
     const parsed = Number(value);
