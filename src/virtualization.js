@@ -7,6 +7,11 @@
   let indicatorElement = null;
   let scrollToTopButton = null;
   let scrollToBottomButton = null;
+  const SCROLL_BUTTON_SIZE_PX = 30;
+  const SCROLL_BUTTON_OFFSET_PX = 12;
+  const SCROLL_BUTTON_GAP_PX = 10;
+  const INDICATOR_OFFSET_PX =
+    SCROLL_BUTTON_OFFSET_PX + SCROLL_BUTTON_SIZE_PX + SCROLL_BUTTON_GAP_PX;
   // 10px buffer prevents flicker from tiny overflow rounding differences.
   const SCROLL_BUFFER_PX = 10;
 
@@ -156,6 +161,7 @@
   }
 
   function getMaxScrollTop(scrollTarget) {
+    if (!scrollTarget) return 0;
     return Math.max(0, scrollTarget.scrollHeight - scrollTarget.clientHeight);
   }
 
@@ -172,9 +178,9 @@
     const element = document.createElement("div");
     element.setAttribute("data-chatgpt-virtual-indicator", "1");
     element.style.position = "fixed";
-    element.style.right = "12px";
+    element.style.right = `${SCROLL_BUTTON_OFFSET_PX}px`;
     // Offset above the bottom scroll button; keep aligned with button size + spacing.
-    element.style.bottom = "52px";
+    element.style.bottom = `${INDICATOR_OFFSET_PX}px`;
     element.style.zIndex = "9999";
     element.style.display = "none";
     element.style.padding = "4px 10px";
@@ -226,10 +232,10 @@
     button.type = "button";
     button.setAttribute("data-chatgpt-virtual-scroll", position);
     button.style.position = "fixed";
-    button.style.right = "12px";
+    button.style.right = `${SCROLL_BUTTON_OFFSET_PX}px`;
     button.style.zIndex = "9999";
-    button.style.width = "30px";
-    button.style.height = "30px";
+    button.style.width = `${SCROLL_BUTTON_SIZE_PX}px`;
+    button.style.height = `${SCROLL_BUTTON_SIZE_PX}px`;
     button.style.borderRadius = "999px";
     button.style.border = "none";
     button.style.cursor = "pointer";
@@ -244,11 +250,11 @@
     button.style.padding = "0";
 
     if (position === "top") {
-      button.style.top = "12px";
+      button.style.top = `${SCROLL_BUTTON_OFFSET_PX}px`;
       button.textContent = "↑";
       button.setAttribute("aria-label", "Scroll to top");
     } else {
-      button.style.bottom = "12px";
+      button.style.bottom = `${SCROLL_BUTTON_OFFSET_PX}px`;
       button.textContent = "↓";
       button.setAttribute("aria-label", "Scroll to bottom");
     }
