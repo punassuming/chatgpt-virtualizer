@@ -351,7 +351,9 @@
 
     const element = ensureIndicatorElement();
     const ratio =
-      totalMessages > 0 ? Math.min(1, hidden / totalMessages) : 0;
+      totalMessages > 0
+        ? Math.min(1, Math.max(0, hidden / totalMessages))
+        : 0;
     const height =
       INDICATOR_MIN_HEIGHT_PX +
       ratio * (INDICATOR_MAX_HEIGHT_PX - INDICATOR_MIN_HEIGHT_PX);
