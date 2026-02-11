@@ -5,8 +5,8 @@
   const state = scroller.state;
   const log = scroller.log;
   let indicatorElement = null;
-  let scrollTopButton = null;
-  let scrollBottomButton = null;
+  let scrollToTopButton = null;
+  let scrollToBottomButton = null;
   // 10px buffer prevents flicker from tiny overflow rounding differences.
   const SCROLL_BUFFER_PX = 10;
 
@@ -174,7 +174,7 @@
     element.setAttribute("data-chatgpt-virtual-indicator", "1");
     element.style.position = "fixed";
     element.style.right = "12px";
-    // Offset above the bottom scroll button (12px margin + 30px button + 10px gap).
+    // Offset above the bottom scroll button; keep aligned with button size + spacing.
     element.style.bottom = "52px";
     element.style.zIndex = "9999";
     element.style.display = "none";
@@ -214,7 +214,7 @@
   }
 
   function ensureScrollButton(position) {
-    const existingButton = position === "top" ? scrollTopButton : scrollBottomButton;
+    const existingButton = position === "top" ? scrollToTopButton : scrollToBottomButton;
     if (existingButton && existingButton.isConnected) {
       return existingButton;
     }
@@ -273,17 +273,17 @@
     document.body.appendChild(button);
 
     if (position === "top") {
-      scrollTopButton = button;
+      scrollToTopButton = button;
     } else {
-      scrollBottomButton = button;
+      scrollToBottomButton = button;
     }
 
     return button;
   }
 
   function hideScrollButtons() {
-    if (scrollTopButton) scrollTopButton.style.display = "none";
-    if (scrollBottomButton) scrollBottomButton.style.display = "none";
+    if (scrollToTopButton) scrollToTopButton.style.display = "none";
+    if (scrollToBottomButton) scrollToBottomButton.style.display = "none";
   }
 
   function updateScrollButtons(totalMessages) {
@@ -588,14 +588,14 @@
     }
     indicatorElement = null;
 
-    if (scrollTopButton && scrollTopButton.isConnected) {
-      scrollTopButton.remove();
+    if (scrollToTopButton && scrollToTopButton.isConnected) {
+      scrollToTopButton.remove();
     }
-    if (scrollBottomButton && scrollBottomButton.isConnected) {
-      scrollBottomButton.remove();
+    if (scrollToBottomButton && scrollToBottomButton.isConnected) {
+      scrollToBottomButton.remove();
     }
-    scrollTopButton = null;
-    scrollBottomButton = null;
+    scrollToTopButton = null;
+    scrollToBottomButton = null;
   }
 
   function startUrlWatcher() {
