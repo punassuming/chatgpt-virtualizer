@@ -350,8 +350,8 @@
     }
 
     const element = ensureIndicatorElement();
-    const safeHidden = Math.min(totalMessages, Math.max(0, hidden));
-    const ratio = totalMessages > 0 ? safeHidden / totalMessages : 0;
+    const clampedHidden = Math.min(totalMessages, Math.max(0, hidden));
+    const ratio = totalMessages > 0 ? clampedHidden / totalMessages : 0;
     const height =
       INDICATOR_MIN_HEIGHT_PX +
       ratio * (INDICATOR_MAX_HEIGHT_PX - INDICATOR_MIN_HEIGHT_PX);
@@ -359,7 +359,7 @@
       INDICATOR_MIN_OPACITY +
       ratio * (INDICATOR_MAX_OPACITY - INDICATOR_MIN_OPACITY);
 
-    element.style.height = `${Math.floor(height)}px`;
+    element.style.height = `${Math.round(height)}px`;
     element.style.opacity = String(opacity);
     element.setAttribute(
       "aria-label",
