@@ -5,6 +5,8 @@
   const state = scroller.state;
   const log = scroller.log;
   let indicatorElement = null;
+  let scrollTopButton = null;
+  let scrollBottomButton = null;
 
   // ---------------------------------------------------------------------------
   // Selectors
@@ -146,7 +148,7 @@
     element.setAttribute("data-chatgpt-virtual-indicator", "1");
     element.style.position = "fixed";
     element.style.right = "12px";
-    element.style.bottom = "12px";
+    element.style.bottom = "52px";
     element.style.zIndex = "9999";
     element.style.display = "none";
     element.style.padding = "4px 10px";
@@ -174,15 +176,124 @@
     }
   }
 
+  function ensureScrollButton(position) {
+    const existingButton = position === "top" ? scrollTopButton : scrollBottomButton;
+    if (existingButton && existingButton.isConnected) {
+      return existingButton;
+    }
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.setAttribute("data-chatgpt-virtual-scroll", position);
+    button.style.position = "fixed";
+    button.style.right = "12px";
+    button.style.zIndex = "9999";
+    button.style.display = "none";
+    button.style.width = "30px";
+    button.style.height = "30px";
+    button.style.borderRadius = "999px";
+    button.style.border = "none";
+    button.style.cursor = "pointer";
+    button.style.background = "rgba(17, 24, 39, 0.7)";
+    button.style.color = "#f9fafb";
+    button.style.fontSize = "16px";
+    button.style.fontWeight = "600";
+    button.style.boxShadow = "0 6px 16px rgba(15, 23, 42, 0.2)";
+    button.style.display = "none";
+    button.style.alignItems = "center";
+    button.style.justifyContent = "center";
+    button.style.padding = "0";
+
+    if (position === "top") {
+      button.style.top = "12px";
+      button.textContent = "↑";
+      button.setAttribute("aria-label", "Scroll to top");
+    } else {
+      button.style.bottom = "12px";
+      button.textContent = "↓";
+      button.setAttribute("aria-label", "Scroll to bottom");
+    }
+
+    button.addEventListener("click", () => {
+      const scrollElement = state.scrollElement;
+      const scrollTarget =
+        scrollElement === window ||
+        scrollElement === document.body ||
+        scrollElement === document.documentElement
+          ? document.scrollingElement || document.documentElement
+          : scrollElement;
+
+      if (!scrollTarget) return;
+
+      if (position === "top") {
+        scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        scrollTarget.scrollTo({
+          top: scrollTarget.scrollHeight,
+          behavior: "smooth"
+        });
+      }
+    });
+
+    document.body.appendChild(button);
+
+    if (position === "top") {
+      scrollTopButton = button;
+    } else {
+      scrollBottomButton = button;
+    }
+
+    return button;
+  }
+
+  function hideScrollButtons() {
+    if (scrollTopButton) scrollTopButton.style.display = "none";
+    if (scrollBottomButton) scrollBottomButton.style.display = "none";
+  }
+
+  function updateScrollButtons(totalMessages) {
+    if (!state.enabled || totalMessages === 0) {
+      hideScrollButtons();
+      return;
+    }
+
+    const scrollElement = state.scrollElement;
+    const scrollTarget =
+      scrollElement === window ||
+      scrollElement === document.body ||
+      scrollElement === document.documentElement
+        ? document.scrollingElement || document.documentElement
+        : scrollElement;
+
+    if (!scrollTarget) {
+      hideScrollButtons();
+      return;
+    }
+
+    const isScrollable =
+      scrollTarget.scrollHeight > scrollTarget.clientHeight + 10;
+    if (!isScrollable) {
+      hideScrollButtons();
+      return;
+    }
+
+    const topButton = ensureScrollButton("top");
+    const bottomButton = ensureScrollButton("bottom");
+    topButton.style.display = "inline-flex";
+    bottomButton.style.display = "inline-flex";
+  }
+
   function updateIndicator(totalMessages, renderedMessages) {
     if (!state.enabled) {
       hideIndicator();
+      hideScrollButtons();
       return;
     }
 
     const hidden = totalMessages - renderedMessages;
     if (totalMessages === 0 || hidden <= 0) {
       hideIndicator();
+      updateScrollButtons(totalMessages);
       return;
     }
 
@@ -195,6 +306,7 @@
       `Virtualizing ${hidden} message${hidden === 1 ? "" : "s"}`
     );
     element.style.display = "inline-flex";
+    updateScrollButtons(totalMessages);
   }
 
   function convertArticleToSpacer(articleElement) {
@@ -249,6 +361,7 @@
   function virtualizeNow() {
     if (!state.enabled) {
       hideIndicator();
+      hideScrollButtons();
       return;
     }
 
@@ -259,6 +372,8 @@
     );
     if (!nodes.length) {
       log("virtualize: no messages yet");
+      hideIndicator();
+      hideScrollButtons();
       return;
     }
 
@@ -443,6 +558,15 @@
       indicatorElement.remove();
     }
     indicatorElement = null;
+
+    if (scrollTopButton && scrollTopButton.isConnected) {
+      scrollTopButton.remove();
+    }
+    if (scrollBottomButton && scrollBottomButton.isConnected) {
+      scrollBottomButton.remove();
+    }
+    scrollTopButton = null;
+    scrollBottomButton = null;
   }
 
   function startUrlWatcher() {
