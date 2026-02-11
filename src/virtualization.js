@@ -188,7 +188,6 @@
     button.style.position = "fixed";
     button.style.right = "12px";
     button.style.zIndex = "9999";
-    button.style.display = "none";
     button.style.width = "30px";
     button.style.height = "30px";
     button.style.borderRadius = "999px";
@@ -279,8 +278,8 @@
 
     const topButton = ensureScrollButton("top");
     const bottomButton = ensureScrollButton("bottom");
-    topButton.style.display = "inline-flex";
-    bottomButton.style.display = "inline-flex";
+    topButton.style.display = "flex";
+    bottomButton.style.display = "flex";
   }
 
   function updateIndicator(totalMessages, renderedMessages) {
