@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleEnabledElement = document.getElementById("toggleEnabled");
   const toggleDebugElement = document.getElementById("toggleDebug");
   const bufferSizeElement = document.getElementById("bufferSize");
+  // Fallback values mirror defaults in constants.js if it fails to load.
   const config = window.ChatGPTVirtualScroller?.config ?? {
     MIN_MARGIN_PX: 500,
     MAX_MARGIN_PX: 5000,
