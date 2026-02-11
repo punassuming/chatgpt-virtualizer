@@ -354,7 +354,7 @@
     const element = ensureIndicatorElement();
     element.textContent = `Virtualizing ${hidden} message${
       hidden === 1 ? "" : "s"
-    } - Buffer ${config.MARGIN_PX}px`;
+    } with ${config.MARGIN_PX}px buffer`;
     element.setAttribute(
       "aria-label",
       `Virtualizing ${hidden} message${
