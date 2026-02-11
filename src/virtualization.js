@@ -156,9 +156,7 @@
   }
 
   function getMaxScrollTop(scrollTarget) {
-    return scrollTarget
-      ? Math.max(0, scrollTarget.scrollHeight - scrollTarget.clientHeight)
-      : 0;
+    return Math.max(0, scrollTarget.scrollHeight - scrollTarget.clientHeight);
   }
 
   function isScrollable(scrollTarget) {
