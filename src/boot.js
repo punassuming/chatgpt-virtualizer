@@ -32,17 +32,21 @@
 
     chrome.storage.onChanged.addListener((changes, areaName) => {
       if (areaName !== "sync") return;
+      let needsResize = false;
       if (changes.enabled) {
         state.enabled = changes.enabled.newValue;
-        virtualizer.handleResize();
+        needsResize = true;
       }
       if (changes.marginPx) {
         config.MARGIN_PX = normalizeMargin(changes.marginPx.newValue);
-        virtualizer.handleResize();
+        needsResize = true;
       }
       if (changes.debug) {
         state.debug = changes.debug.newValue;
         scroller.logPromoMessage();
+      }
+      if (needsResize) {
+        virtualizer.handleResize();
       }
     });
   }
