@@ -156,8 +156,9 @@
   }
 
   function getMaxScrollTop(scrollTarget) {
-    if (!scrollTarget) return 0;
-    return Math.max(0, scrollTarget.scrollHeight - scrollTarget.clientHeight);
+    return scrollTarget
+      ? Math.max(0, scrollTarget.scrollHeight - scrollTarget.clientHeight)
+      : 0;
   }
 
   function isScrollable(scrollTarget) {
@@ -255,6 +256,7 @@
     }
 
     button.addEventListener("click", () => {
+      // Use latest scroll target in case the container changes.
       const scrollTarget = getScrollTarget();
 
       if (!scrollTarget) return;
