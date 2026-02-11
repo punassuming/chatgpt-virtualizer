@@ -350,8 +350,8 @@
     }
 
     const element = ensureIndicatorElement();
-    const validHiddenCount = Math.min(totalMessages, Math.max(0, hidden));
-    const ratio = totalMessages > 0 ? validHiddenCount / totalMessages : 0;
+    const clampedHiddenCount = Math.min(totalMessages, Math.max(0, hidden));
+    const ratio = totalMessages > 0 ? clampedHiddenCount / totalMessages : 0;
     const height =
       INDICATOR_MIN_HEIGHT_PX +
       ratio * (INDICATOR_MAX_HEIGHT_PX - INDICATOR_MIN_HEIGHT_PX);
