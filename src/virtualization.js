@@ -174,6 +174,7 @@
     element.setAttribute("data-chatgpt-virtual-indicator", "1");
     element.style.position = "fixed";
     element.style.right = "12px";
+    // Offset above the bottom scroll button.
     element.style.bottom = "52px";
     element.style.zIndex = "9999";
     element.style.display = "none";
@@ -205,6 +206,10 @@
   function hideAllUiElements() {
     hideIndicator();
     hideScrollButtons();
+  }
+
+  function setButtonVisibility(button, shouldShow) {
+    button.style.display = shouldShow ? "flex" : "none";
   }
 
   function ensureScrollButton(position) {
@@ -306,10 +311,11 @@
     }
 
     const maxScrollTop = getMaxScrollTop(scrollTarget);
-    topButton.style.display =
-      scrollTarget.scrollTop > SCROLL_BUFFER_PX ? "flex" : "none";
-    bottomButton.style.display =
-      scrollTarget.scrollTop < maxScrollTop - SCROLL_BUFFER_PX ? "flex" : "none";
+    setButtonVisibility(topButton, scrollTarget.scrollTop > SCROLL_BUFFER_PX);
+    setButtonVisibility(
+      bottomButton,
+      scrollTarget.scrollTop < maxScrollTop - SCROLL_BUFFER_PX
+    );
   }
 
   function updateIndicator(totalMessages, renderedMessages) {
