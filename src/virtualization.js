@@ -198,6 +198,10 @@
       return existingButton;
     }
 
+    if (!document.body) {
+      return null;
+    }
+
     const button = document.createElement("button");
     button.type = "button";
     button.setAttribute("data-chatgpt-virtual-scroll", position);
@@ -282,8 +286,16 @@
 
     const topButton = ensureScrollButton("top");
     const bottomButton = ensureScrollButton("bottom");
-    topButton.style.display = "flex";
-    bottomButton.style.display = "flex";
+    if (!topButton || !bottomButton) {
+      hideScrollButtons();
+      return;
+    }
+
+    const maxScrollTop = scrollTarget.scrollHeight - scrollTarget.clientHeight;
+    topButton.style.display =
+      scrollTarget.scrollTop > SCROLL_BUFFER_PX ? "flex" : "none";
+    bottomButton.style.display =
+      scrollTarget.scrollTop < maxScrollTop - SCROLL_BUFFER_PX ? "flex" : "none";
   }
 
   function updateIndicator(totalMessages, renderedMessages) {
