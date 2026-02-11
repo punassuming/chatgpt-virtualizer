@@ -156,7 +156,12 @@
   }
 
   function getMaxScrollTop(scrollTarget) {
+    if (!scrollTarget) return 0;
     return Math.max(0, scrollTarget.scrollHeight - scrollTarget.clientHeight);
+  }
+
+  function isScrollable(scrollTarget) {
+    return getMaxScrollTop(scrollTarget) >= SCROLL_BUFFER_PX;
   }
 
   function ensureIndicatorElement() {
@@ -282,9 +287,7 @@
       return;
     }
 
-    const isScrollable =
-      scrollTarget.scrollHeight - scrollTarget.clientHeight >= SCROLL_BUFFER_PX;
-    if (!isScrollable) {
+    if (!isScrollable(scrollTarget)) {
       hideScrollButtons();
       return;
     }
