@@ -9,6 +9,8 @@
   let scrollToBottomButton = null;
   const SCROLL_BUTTON_SIZE_PX = 30;
   const SCROLL_BUTTON_OFFSET_PX = 12;
+  const INDICATOR_RIGHT_OFFSET_PX = 6;
+  const INDICATOR_HEIGHT_PX = 48;
   const MAX_SCROLL_ATTEMPTS = 2;
   const SCROLL_RETRY_DELAY_MS = 300;
   // 10px buffer prevents flicker from tiny overflow rounding differences.
@@ -177,13 +179,13 @@
     const element = document.createElement("div");
     element.setAttribute("data-chatgpt-virtual-indicator", "1");
     element.style.position = "fixed";
-    element.style.right = "6px";
+    element.style.right = `${INDICATOR_RIGHT_OFFSET_PX}px`;
     element.style.top = "50%";
     element.style.transform = "translateY(-50%)";
     element.style.zIndex = "9999";
     element.style.display = "none";
     element.style.width = "6px";
-    element.style.height = "48px";
+    element.style.height = `${INDICATOR_HEIGHT_PX}px`;
     element.style.borderRadius = "999px";
     element.style.background = "rgba(17, 24, 39, 0.6)";
     element.style.boxShadow = "0 4px 10px rgba(15, 23, 42, 0.18)";
