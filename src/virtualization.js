@@ -7,6 +7,7 @@
   let indicatorElement = null;
   let scrollTopButton = null;
   let scrollBottomButton = null;
+  const SCROLL_BUFFER_PX = 10;
 
   // ---------------------------------------------------------------------------
   // Selectors
@@ -139,6 +140,20 @@
     return { top: 0, height: window.innerHeight };
   }
 
+  function getScrollTarget() {
+    const scrollElement = state.scrollElement;
+
+    if (
+      scrollElement === window ||
+      scrollElement === document.body ||
+      scrollElement === document.documentElement
+    ) {
+      return document.scrollingElement || document.documentElement;
+    }
+
+    return scrollElement instanceof HTMLElement ? scrollElement : null;
+  }
+
   function ensureIndicatorElement() {
     if (indicatorElement && indicatorElement.isConnected) {
       return indicatorElement;
@@ -214,13 +229,7 @@
     }
 
     button.addEventListener("click", () => {
-      const scrollElement = state.scrollElement;
-      const scrollTarget =
-        scrollElement === window ||
-        scrollElement === document.body ||
-        scrollElement === document.documentElement
-          ? document.scrollingElement || document.documentElement
-          : scrollElement;
+      const scrollTarget = getScrollTarget();
 
       if (!scrollTarget) return;
 
@@ -256,13 +265,7 @@
       return;
     }
 
-    const scrollElement = state.scrollElement;
-    const scrollTarget =
-      scrollElement === window ||
-      scrollElement === document.body ||
-      scrollElement === document.documentElement
-        ? document.scrollingElement || document.documentElement
-        : scrollElement;
+    const scrollTarget = getScrollTarget();
 
     if (!scrollTarget) {
       hideScrollButtons();
@@ -270,7 +273,7 @@
     }
 
     const isScrollable =
-      scrollTarget.scrollHeight > scrollTarget.clientHeight + 10;
+      scrollTarget.scrollHeight > scrollTarget.clientHeight + SCROLL_BUFFER_PX;
     if (!isScrollable) {
       hideScrollButtons();
       return;
