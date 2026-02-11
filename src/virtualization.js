@@ -7,7 +7,7 @@
   let indicatorElement = null;
   let scrollTopButton = null;
   let scrollBottomButton = null;
-  // Small buffer to ignore tiny overflow differences when checking scrollability.
+  // 10px buffer prevents flicker from tiny overflow rounding differences.
   const SCROLL_BUFFER_PX = 10;
 
   // ---------------------------------------------------------------------------
@@ -161,6 +161,7 @@
   }
 
   function isScrollable(scrollTarget) {
+    if (!scrollTarget) return false;
     return getMaxScrollTop(scrollTarget) >= SCROLL_BUFFER_PX;
   }
 
@@ -199,6 +200,11 @@
     if (indicatorElement) {
       indicatorElement.style.display = "none";
     }
+  }
+
+  function hideAllUiElements() {
+    hideIndicator();
+    hideScrollButtons();
   }
 
   function ensureScrollButton(position) {
@@ -308,8 +314,7 @@
 
   function updateIndicator(totalMessages, renderedMessages) {
     if (!state.enabled) {
-      hideIndicator();
-      hideScrollButtons();
+      hideAllUiElements();
       return;
     }
 
@@ -383,8 +388,7 @@
 
   function virtualizeNow() {
     if (!state.enabled) {
-      hideIndicator();
-      hideScrollButtons();
+      hideAllUiElements();
       return;
     }
 
@@ -395,8 +399,7 @@
     );
     if (!nodes.length) {
       log("virtualize: no messages yet");
-      hideIndicator();
-      hideScrollButtons();
+      hideAllUiElements();
       return;
     }
 
