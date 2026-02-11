@@ -6,6 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const toggleEnabledElement = document.getElementById("toggleEnabled");
   const toggleDebugElement = document.getElementById("toggleDebug");
+  const bufferSizeElement = document.getElementById("bufferSize");
+
+  const MIN_BUFFER_PX = 500;
+  const MAX_BUFFER_PX = 5000;
+  const DEFAULT_BUFFER_PX = 2000;
+
+  function normalizeBufferSize(value) {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return DEFAULT_BUFFER_PX;
+    return Math.min(MAX_BUFFER_PX, Math.max(MIN_BUFFER_PX, Math.round(parsed)));
+  }
 
   // Helper: Update status text immediately
   function updateStatusText(enabled) {
@@ -15,12 +26,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Initial loading of stored settings
-  chrome.storage.sync.get({ enabled: true, debug: false }, (data) => {
-    toggleEnabledElement.checked = data.enabled;
-    toggleDebugElement.checked = data.debug;
+  chrome.storage.sync.get(
+    { enabled: true, debug: false, marginPx: DEFAULT_BUFFER_PX },
+    (data) => {
+      toggleEnabledElement.checked = data.enabled;
+      toggleDebugElement.checked = data.debug;
+      bufferSizeElement.value = String(normalizeBufferSize(data.marginPx));
 
-    updateStatusText(data.enabled);
-  });
+      updateStatusText(data.enabled);
+    }
+  );
 
   // On change → update immediately AND save
   toggleEnabledElement.addEventListener("change", () => {
@@ -34,6 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleDebugElement.addEventListener("change", () => {
     const newValue = toggleDebugElement.checked;
     chrome.storage.sync.set({ debug: newValue });
+  });
+
+  bufferSizeElement.addEventListener("change", () => {
+    const normalized = normalizeBufferSize(bufferSizeElement.value);
+    bufferSizeElement.value = String(normalized);
+    chrome.storage.sync.set({ marginPx: normalized });
   });
 
   // Fetch stats from content script

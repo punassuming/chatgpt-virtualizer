@@ -218,6 +218,33 @@
     button.style.display = shouldShow ? "flex" : "none";
   }
 
+  function scrollToEdge(position) {
+    const attemptScroll = (attempt) => {
+      const scrollTarget = getScrollTarget();
+      if (!scrollTarget) return;
+
+      const maxScrollTop = getMaxScrollTop(scrollTarget);
+      const targetTop = position === "top" ? 0 : maxScrollTop;
+      scrollTarget.scrollTo({ top: targetTop, behavior: "smooth" });
+
+      if (attempt < 2) {
+        setTimeout(() => {
+          const updatedTarget = getScrollTarget();
+          if (!updatedTarget) return;
+          const updatedMax = getMaxScrollTop(updatedTarget);
+          const atEdge =
+            position === "top"
+              ? updatedTarget.scrollTop <= SCROLL_BUFFER_PX
+              : updatedTarget.scrollTop >= updatedMax - SCROLL_BUFFER_PX;
+
+          if (!atEdge) attemptScroll(attempt + 1);
+        }, 300);
+      }
+    };
+
+    attemptScroll(0);
+  }
+
   function ensureScrollButton(position) {
     const existingButton = position === "top" ? scrollToTopButton : scrollToBottomButton;
     if (existingButton && existingButton.isConnected) {
@@ -261,19 +288,7 @@
 
     button.addEventListener("click", () => {
       // Use latest scroll target in case the container changes.
-      const scrollTarget = getScrollTarget();
-
-      if (!scrollTarget) return;
-
-      if (position === "top") {
-        scrollTarget.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        const maxScrollTop = getMaxScrollTop(scrollTarget);
-        scrollTarget.scrollTo({
-          top: maxScrollTop,
-          behavior: "smooth"
-        });
-      }
+      scrollToEdge(position);
     });
 
     document.body.appendChild(button);
@@ -337,10 +352,12 @@
     const element = ensureIndicatorElement();
     element.textContent = `Virtualizing ${hidden} message${
       hidden === 1 ? "" : "s"
-    }`;
+    } · Buffer ${config.MARGIN_PX}px`;
     element.setAttribute(
       "aria-label",
-      `Virtualizing ${hidden} message${hidden === 1 ? "" : "s"}`
+      `Virtualizing ${hidden} message${
+        hidden === 1 ? "" : "s"
+      } with ${config.MARGIN_PX}px buffer`
     );
     element.style.display = "inline-flex";
     updateScrollButtons(totalMessages);
